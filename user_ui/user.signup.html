@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <!-- <link rel="stylesheet" href="./login.html"> -->
+    <style>
+        #container form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div id="container">
+            <form id="signupForm">
+                <input id="name" type="text" placeholder="Enter name" required>
+                <input id="email" type="email" placeholder="Enter email" required>
+                <input id="password" type="password" placeholder="Enter password" required>
+                <button type="submit" id="submitBtn">Signup</button>
+            </form>
+            
+            <h3>Already have account</h3>
+            <button onclick="window.location.href='../user_ui/user.login.html'">Login</button>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("http://localhost:8080/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "username": name,
+                        "email": email,
+                        "password": password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Signup successful!");
+                    window.location. href="./login.html"
+                } else {
+                    alert(`Error: ${data.message}`);
+                    window.location. href="./login.html"
+                }
+            } catch (error) {
+                console.error("Error:");
+                console.log(error)
+                alert("Something went wrong! Please try again.");
+            }
+        });
+    </script>
+</body>
+
+</html>
