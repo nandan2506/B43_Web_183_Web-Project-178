@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin</title>
+</head>
+<body>
+    <h1>admin</h1>
+    <form id="submitForm">
+        <input type="text" id="email">
+        <input type="password" id="password">
+        <button>login</button>
+    </form>
+
+</body>
+<script>
+    const submitForm = document.getElementById("submitForm")
+    submitForm.addEventListener("submit",async(e)=>{
+        e.preventDefault()
+        const email = document.getElementById("email").value
+        const password = document.getElementById("password").value
+        try {
+            const response = await fetch('http://localhost:8080/admin/login',
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type": "application/json"
+                    },
+                    body:JSON.stringify({
+                        "email":email,
+                        "password":password
+                    })
+                }
+            )
+
+            const data = await response.json()
+
+            if(response.ok){
+                alert("login successfull")
+                window.location.href="./admin.html"
+            }
+            else{
+                alert("admin not found",data.message)
+
+            }
+        } catch (error) {
+            alert("somthing went wrong")
+            console.log("error while admin login",error)
+        }
+    })
+</script>
+</html>

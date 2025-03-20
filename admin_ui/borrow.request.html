@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow Requests</title>
+</head>
+
+<body>
+    <h2>Pending Borrow Requests</h2>
+    <div id="requests"></div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+        crossorigin="anonymous">
+    </script>
+
+    <script>
+        const socket = io("http://localhost:8080", { transports: ["websocket"] });
+
+        // Admin joins the room to listen for borrow requests
+        // socket.emit("join-room", "admin-room");
+
+        socket.on("new-borrow-request", (data) => {
+            console.log("New borrow request:", data);
+
+            // Display request in the admin panel
+            const requestContainer = document.getElementById("requests");
+
+            // Create a request card
+            const requestDiv = document.createElement("div");
+            requestDiv.classList.add("request");
+            requestDiv.innerHTML = `
+                <p><strong>User ID:</strong> ${data.userId}</p>
+                <p><strong>Book ID:</strong> ${data.bookId}</p>
+                <button onclick="approveRequest('${data.userId}', '${data.bookId}')">Approve</button>
+                <button onclick="rejectRequest('${data.userId}', '${data.bookId}')">Reject</button>
+            `;
+
+            requestContainer.appendChild(requestDiv);
+        });
+
+        // Approve request function
+        function approveRequest(userId, bookId) {
+            socket.emit("borrow-approval", { userId, bookId, status: "approved" });
+            alert(`Approved borrow request for Book ID: ${bookId}`);
+            removeRequest(bookId);
+        }
+
+        // Reject request function
+        function rejectRequest(userId, bookId) {
+            socket.emit("borrow-approval", { userId, bookId, status: "rejected" });
+            alert(`Rejected borrow request for Book ID: ${bookId}`);
+            removeRequest(bookId);
+        }
+
+        // Remove request from UI after approval/rejection
+        function removeRequest(bookId) {
+            const requestDivs = document.querySelectorAll(".request");
+            requestDivs.forEach((div) => {
+                if (div.innerHTML.includes(bookId)) {
+                    div.remove();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

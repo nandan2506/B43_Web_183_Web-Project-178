@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add book</title>
+</head>
+
+<body>
+    <div>
+        <div>
+            <div>
+                <form id="submitForm">
+                    <label>Title: <input type="text" name="title" id="title"></label><br>
+                    <label>Author: <input type="text" name="author" id="author"></label><br>
+                    <label>Publication Year: <input type="number" name="publication_year"
+                            id="publication_year"></label><br>
+                    <!-- Allow multiple genres -->
+                    <label>Genres (comma-separated): <input type="text" name="genre" id="genre"></label><br>
+                    <label>Description: <input type="text" name="description" id="description"></label><br>
+                    <label>Cover Image URL: <input type="text" name="cover_image" id="cover_image"></label><br>
+
+                    <button type="submit">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const submitForm = document.getElementById("submitForm")
+    submitForm.addEventListener("submit", async (e) => {
+        e.preventDefault(); 
+
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const publication_year = document.getElementById("publication_year").value;
+        const description = document.getElementById("description").value;
+        const cover_image = document.getElementById("cover_image").value;
+
+        // Convert genre input into an array (comma-separated values)
+        const genreInput = document.getElementById("genre").value;
+        const genres = genreInput.split(",").map(g => g.trim()); // Convert to array
+
+        // Create book object
+        const bookData = {
+            title,
+            author,
+            publication_year,
+            genres, // Send array of genres
+            description,
+            cover_image
+        };
+
+        console.log("Submitting book:", bookData); // Debugging
+
+        try {
+            let res = await fetch("http://localhost:8080/books/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bookData)
+            });
+
+            if (res.ok) {
+                alert("Book added successfully!");
+                document.getElementById("submitForm").reset(); // Clear form after submission
+            } else {
+                alert("Failed to add book.");
+            }
+        } catch (error) {
+            console.error("Error submitting book:", error);
+        }
+    });
+
+</script>
+
+</html>

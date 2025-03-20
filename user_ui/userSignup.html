@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
-    <!-- <link rel="stylesheet" href="./login.html"> -->
+    <!-- <link rel="stylesheet" href="../user_ui/user.login.html"> -->
     <style>
         #container form {
             display: flex;
@@ -26,7 +26,7 @@
             </form>
             
             <h3>Already have account</h3>
-            <button onclick="window.location.href='../user_ui/user.login.html'">Login</button>
+            <button onclick="window.location.href='../user_ui/userLogin.html'">Login</button>
 
         </div>
     </div>
@@ -40,7 +40,7 @@
             const password = document.getElementById("password").value;
 
             try {
-                const response = await fetch("http://localhost:8080/register", {
+                const response = await fetch("http://localhost:8080/user/register", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -56,10 +56,10 @@
 
                 if (response.ok) {
                     alert("Signup successful!");
-                    window.location. href="./login.html"
+                    window.location. href="./userLogin.html"
                 } else {
                     alert(`Error: ${data.message}`);
-                    window.location. href="./login.html"
+                    window.location. href="./userLogin.html"
                 }
             } catch (error) {
                 console.error("Error:");

@@ -1,28 +1,32 @@
+// const { Socket } = require("socket.io")
 
 
 
 (async function () {
     try {
-        let res = await fetch('http://localhost:8080/books',
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+        let res = await fetch('http://localhost:8080/books', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
             }
-        )
-        result = await res.json()
-        displaybooks(result)
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+
+        let result = await res.json();
+        displaybooks(result);
     } catch (error) {
-        console.error(error)
+        console.log("Error fetching books:", error);
     }
-})()
+})();
+
 
 const container = document.getElementById("container")
 const filter = document.getElementById("filter")
 const search = document.getElementById("srch")
-const borrow = document.getElementById("borrow")
-const reserve = document.getElementById("reserve")
+
 
 
 function displaybooks(arr) {
@@ -37,14 +41,47 @@ function displaybooks(arr) {
                 <p>Author: ${book.author}</p>
                 <p>Year: ${book.publication_year}</p>
                 <p>${book.description}</p>
-                <button id="borrow">Borrow</button>
-                <button id="reserve">Reserve</button>
+                <button class="borrow" data-id="${book._id}">Borrow</button>
+                <button class="reserve" data-id="${book._id}">Reserve</button>
+                
             </div>
         `;
+        
+        if(!book.is_available){
+            card.querySelector(".borrow").style.display = "none"
+            card.querySelector(".reserve").style.display = "block"
+            
+
+        }
         container.appendChild(card)
     });
+    attachEventListeners()
+
 }
 
+
+function attachEventListeners() {
+    const borrow = document.querySelectorAll(".borrow")
+
+    borrow.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const bookId = e.target.getAttribute("data-id");
+            const userId = "2345"; 
+            socket.emit("borrow-request", { bookId, userId });
+            alert("Borrow request sent");
+
+        });
+    });
+
+    document.querySelectorAll(".reserve").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const bookId = e.target.getAttribute("data-id");
+            const userId = "userId"; // Replace with actual user ID
+            socket.emit("reserve-request", { userId, bookId });
+            alert("Reserve request sent");
+        });
+    });
+}
 
 // function searchBook(arr, key, filter) {
 //     if (key == "" || filter == "")
@@ -146,21 +183,21 @@ filter.addEventListener("change", async () => {
 
 })
 
+// borrow.document.querySelectorAll("")
 
+// borrow.addEventListener("click", async (e) => {
+//     try {
+//         e.preventDefault()
+//         if (borrow.parentElement[is_available == true]) {
+//             borrow.parentElement[is_available] = false
+//             alert("borrow request sent")
+//             borrow.style.display = "none"
+//             reserve.style.display = "block"
+//         }
+//     } catch (error) {
 
-borrow.addEventListener("click", async (e) => {
-    try {
-        e.preventDefault()
-        if (borrow.parentElement[is_available == true]) {
-            borrow.parentElement[is_available] = false
-            alert("borrow request sent")
-            borrow.style.display = "none"
-            reserve.style.display = "block"
-        }
-    } catch (error) {
-
-    }
-})
+//     }
+// })
 
 
 
