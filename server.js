@@ -1,85 +1,85 @@
-const express = require("express")
-const http = require("http")
-const app = express()
-const { connection } = require("./config/db")
-const { Server } = require("socket.io")
+const express = require("express");
+const http = require("http");
+const app = express();
+const { connection } = require("./config/db");
+const { Server } = require("socket.io");
 const cors = require("cors");
-app.use(express.json())
-app.use(cors());
-const bookModel = require("./models/book.model")
 
+const PORT = process.env.PORT || 8080; // Use Render's assigned port
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Import Routes
+const bookModel = require("./models/book.model");
 const userRoutes = require("./routes/user.routes");
 const bookRoutes = require("./routes/book.routes");
-const adminRoutes  = require("./routes/admin.routes")
+const adminRoutes = require("./routes/admin.routes");
 
-const PORT = process.env.PORT || 8080;
+// Create HTTP Server
+const http_server = http.createServer(app);
 
+// Initialize Socket.io with CORS settings
+const wss = new Server(http_server, {
+    cors: {
+        origin: "*", // Allow all origins (change this if needed)
+        methods: ["GET", "POST"],
+    },
+    allowEIO3: true, // Allow older socket.io clients
+});
 
-const http_server = http.createServer(app)
-const wss = new Server(http_server)
+// Routes
+app.use("/user", userRoutes);
+app.use("/books", bookRoutes);
+app.use("/admin", adminRoutes);
 
-
-
-app.use("/user", userRoutes); 
-app.use("/books",bookRoutes );
-app.use("/admin", adminRoutes)
-
-
-
+// Socket.io event handlers
 wss.on("connection", (socket) => {
+    console.log("New WebSocket connection established");
 
     socket.on("borrow-request", async (data) => {
-        // data = userId, bookId
         try {
             console.log("Borrow request received:", data);
-
 
             // Update book availability
             const updateResult = await bookModel.updateOne(
                 { _id: data.bookId },
                 { is_available: false },
                 { new: true }
-                
             );
-            console.log("updated book",updateResult)
 
             if (updateResult.modifiedCount > 0) {
                 console.log("Book marked as unavailable:", data.bookId);
-            
+                
                 // Emit update event to all clients
                 wss.emit("available-update", { bookId: data.bookId, is_available: false });
-            
-                // Log connected clients for debugging
-                console.log("Connected clients:");
-            
+                
                 // Notify admins about the borrow request
                 wss.emit("new-borrow-request", data);
-                // data = userId, bookId
+                
                 console.log("Borrow request sent from server to admin:", data);
-            
             } else {
                 console.log("Book availability update failed.");
-                console.log("Update result:", updateResult); // Debugging
             }
-            
         } catch (error) {
             console.error("Error processing borrow request:", error);
             socket.emit("borrow-error", { message: "An error occurred while processing your request." });
         }
     });
-})
 
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+    });
+});
 
-
-
+// Start the server
 http_server.listen(PORT, async () => {
     try {
         await connection;
-        console.log("Connected to DB");
+        console.log("✅ Connected to DB");
     } catch (error) {
-        console.log("Error while connecting to DB:", error);
+        console.log("❌ Error while connecting to DB:", error);
     }
-    console.log(`Server listening on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
