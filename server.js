@@ -11,6 +11,7 @@ const bookModel = require("./models/book.model")
 const userRoutes = require("./routes/user.routes");
 const bookRoutes = require("./routes/book.routes");
 const adminRoutes  = require("./routes/admin.routes")
+const PORT = process.env.PORT || 8080;
 
 
 const http_server = http.createServer(app)
@@ -68,7 +69,7 @@ wss.on("connection", (socket) => {
 })
 
 
-http_server.listen(8080, async () => {
+http_server.listen(PORT, async () => {
     try {
         await connection
         console.log("connected to db")
