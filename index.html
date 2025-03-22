@@ -5,32 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <!-- <link rel="stylesheet" href=""> -->
-    <style>
-        #image,
-        #user,
-        #admin {
-            /* display: block; */
-            text-align: center;
-        }
-
-        #image img {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-        }
-
-        #box {
-            /* height: 500px; */
-            width: 300px;
-            background-color: aqua;
-            display: flex;
-            flex-direction: column;
-            /* justify-items: center; */
-            padding: 50px;
-            gap: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="./index.css">
+    
 </head>
 
 <body>
@@ -40,11 +16,11 @@
                 <img src="./Screenshot 2025-03-18 135221.png" alt="logo">
             </div>
 
-            <div id="user" style="background-color: blue;border-radius: 10px;color: white;cursor: pointer;">
+            <div id="user">
                 <h2>USER</h2>
             </div>
 
-            <div id="admin" style="background-color: blue;border-radius: 10px;color: white;cursor: pointer;">
+            <div id="admin">
                 <h2>ADMIN</h2>
             </div>
         </div>
@@ -55,13 +31,7 @@
 <script>
     const socket = io("http://localhost:8080" ,{transports: ["websocket"]})
 
-    // socket.emit("greeting","bye")
-    // socket.on("server_msg",(data)=>{
-    //     console.log(data)
-    // })
-    // socket.on("count",(data)=>{
-    //     console.log(`${data} live viewers`)
-    // })
+    
     
 </script>
 <script>

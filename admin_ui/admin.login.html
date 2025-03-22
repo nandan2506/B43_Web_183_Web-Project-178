@@ -1,53 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>admin</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        /* Heading */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Input Fields */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background: #f4f4f4;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            background: #e8e8e8;
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 400px) {
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>admin</h1>
-    <form id="submitForm">
-        <input type="text" id="email">
-        <input type="password" id="password">
-        <button>login</button>
-    </form>
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <form id="submitForm">
+            <input type="text" id="email" placeholder="Enter Email">
+            <input type="password" id="password" placeholder="Enter Password">
+            <button>Login</button>
+        </form>
+    </div>
+
 
 </body>
 <script>
     const submitForm = document.getElementById("submitForm")
-    submitForm.addEventListener("submit",async(e)=>{
+    submitForm.addEventListener("submit", async (e) => {
         e.preventDefault()
         const email = document.getElementById("email").value
         const password = document.getElementById("password").value
         try {
             const response = await fetch('http://localhost:8080/admin/login',
                 {
-                    method:"POST",
-                    headers:{
+                    method: "POST",
+                    headers: {
                         "Content-Type": "application/json"
                     },
-                    body:JSON.stringify({
-                        "email":email,
-                        "password":password
+                    body: JSON.stringify({
+                        "email": email,
+                        "password": password
                     })
                 }
             )
 
             const data = await response.json()
 
-            if(response.ok){
+            if (response.ok) {
                 alert("login successfull")
-                window.location.href="./admin.html"
+                window.location.href = "./admin.html"
             }
-            else{
-                alert("admin not found",data.message)
+            else {
+                alert("admin not found", data.message)
 
             }
         } catch (error) {
             alert("somthing went wrong")
-            console.log("error while admin login",error)
+            console.log("error while admin login", error)
         }
     })
 </script>
+
 </html>

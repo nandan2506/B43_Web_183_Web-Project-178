@@ -4,59 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>all users</title>
+    <title>All Users</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            /* Glassmorphism effect */
+            padding: 20px;
+            border-radius: 12px;
+            /* Removed blur */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            /* Removed blur effect */
+        }
+
+
+        .card h3 {
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 1.4rem;
+        }
+
+        .card p {
+            margin: 5px 0;
+            color: #ddd;
+            font-size: 1rem;
+        }
+
+        .borrowed-books {
+            margin-top: 10px;
+            padding-left: 15px;
+            list-style: none;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .borrowed-books li {
+            margin: 3px 0;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>all users</h2>
-    <div>
-        <div>
-            <div id="container">
-
-            </div>
-        </div>
-    </div>
+    <h2>All Users</h2>
+    <div id="container"></div>
 </body>
 
 <script>
     (async function () {
         try {
-            let res = await fetch('http://localhost:8080/users',
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+            let res = await fetch('http://localhost:8080/user/all', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            )
-            const result = await res.json()
-            console.log(result)
-            displayUsers(result)
+            });
+
+            const result = await res.json();
+            console.log(result);
+            displayUsers(result.data || result);
         } catch (error) {
-            console.error(error)
+            console.log("Error fetching users:", error);
         }
-    })()
+    })();
 
-    const container = document.getElementById("container")
+    const container = document.getElementById("container");
 
-
-
-    function displayUsers(arr) {
-        arr.forEach(user => {
-            const card = document.createElement("div")
-            card.className = "card"
+    function displayUsers(users) {
+        container.innerHTML = "";
+        users.forEach((user) => {
+            const card = document.createElement("div");
+            card.className = "card";
             card.innerHTML = `
-            <div>
                 <h3>Name: ${user.username}</h3>
                 <p>Email: ${user.email}</p>
                 <p>Borrowed Books:</p>
-
-            </div>
-        `;
-            container.appendChild(card)
+                <ul class="borrowed-books">
+                    ${user.borrowed_books && user.borrowed_books.length > 0
+                    ? user.borrowed_books.map(book => `<li>${book.title}</li>`).join("")
+                    : "<li>No books borrowed</li>"}
+                </ul>
+            `;
+            container.appendChild(card);
         });
     }
-
 </script>
 
 </html>

@@ -4,34 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>add book</title>
+    <title>Add Book</title>
+    <style>
+        /* Reset Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Form Fields */
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        /* Submit Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div>
-        <div>
-            <div>
-                <form id="submitForm">
-                    <label>Title: <input type="text" name="title" id="title"></label><br>
-                    <label>Author: <input type="text" name="author" id="author"></label><br>
-                    <label>Publication Year: <input type="number" name="publication_year"
-                            id="publication_year"></label><br>
-                    <!-- Allow multiple genres -->
-                    <label>Genres (comma-separated): <input type="text" name="genre" id="genre"></label><br>
-                    <label>Description: <input type="text" name="description" id="description"></label><br>
-                    <label>Cover Image URL: <input type="text" name="cover_image" id="cover_image"></label><br>
-
-                    <button type="submit">Submit</button>
-                </form>
-
-            </div>
-        </div>
+    <div class="form-container">
+        <h2>Add a Book</h2>
+        <form id="submitForm">
+            <label>Title: <input type="text" name="title" id="title" required></label>
+            <label>Author: <input type="text" name="author" id="author" required></label>
+            <label>Publication Year: <input type="number" name="publication_year" id="publication_year" required></label>
+            <label>Genres (comma-separated): <input type="text" name="genre" id="genre" required></label>
+            <label>Description: <input type="text" name="description" id="description" required></label>
+            <label>Cover Image URL: <input type="text" name="cover_image" id="cover_image" required></label>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 </body>
+
 <script>
     const submitForm = document.getElementById("submitForm")
     submitForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const title = document.getElementById("title").value;
         const author = document.getElementById("author").value;
@@ -41,25 +116,22 @@
 
         // Convert genre input into an array (comma-separated values)
         const genreInput = document.getElementById("genre").value;
-        const genres = genreInput.split(",").map(g => g.trim()); // Convert to array
+        const genre = genreInput.split(",").map(g => g.trim());
 
-        // Create book object
-        const bookData = {
-            title,
-            author,
-            publication_year,
-            genres, // Send array of genres
-            description,
-            cover_image
-        };
-
-        console.log("Submitting book:", bookData); // Debugging
+        console.log("Submitting book:"); // Debugging
 
         try {
             let res = await fetch("http://localhost:8080/books/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(bookData)
+                body: JSON.stringify({
+                    title,
+                    author,
+                    publication_year,
+                    genre,
+                    description,
+                    cover_image
+                })
             });
 
             if (res.ok) {
@@ -72,7 +144,6 @@
             console.error("Error submitting book:", error);
         }
     });
-
 </script>
 
 </html>

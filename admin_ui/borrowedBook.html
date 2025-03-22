@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowed Books</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        /* Books List */
+        .books-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .book-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+        }
+
+        .book-card img {
+            width: 80px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .book-info {
+            flex-grow: 1;
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .book-author {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .borrower {
+            font-size: 14px;
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .books-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Borrowed Books</h2>
+
+    <div class="books-container" id="books-container"></div>
+
+    <script>
+        (async function () {
+            try {
+                let res = await fetch('http://localhost:8080/books/all', {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+                let books = await res.json();
+                displayBooks(books);
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+
+        function displayBooks(books) {
+            let booksContainer = document.getElementById("books-container");
+            let borrowedBooks = books.filter(book => !book.is_available);
+
+            borrowedBooks.forEach(book => {
+                let bookCard = document.createElement("div");
+                bookCard.className = "book-card";
+                bookCard.innerHTML = `
+                    <img src="${book.cover_image}" alt="${book.title}">
+                    <div class="book-info">
+                        <p class="book-title">${book.title}</p>
+                        <p class="book-author">by ${book.author}</p>
+                        <p class="borrower">Borrowed by: ${book.borrower_name || "Unknown"}</p>
+                    </div>
+                `;
+                booksContainer.appendChild(bookCard);
+            });
+        }
+    </script>
+</body>
+
+</html>
