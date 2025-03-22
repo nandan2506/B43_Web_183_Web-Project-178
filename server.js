@@ -11,6 +11,7 @@ const bookModel = require("./models/book.model")
 const userRoutes = require("./routes/user.routes");
 const bookRoutes = require("./routes/book.routes");
 const adminRoutes  = require("./routes/admin.routes")
+
 const PORT = process.env.PORT || 8080;
 
 
@@ -69,13 +70,16 @@ wss.on("connection", (socket) => {
 })
 
 
+
+
 http_server.listen(PORT, async () => {
     try {
-        await connection
-        console.log("connected to db")
+        await connection;
+        console.log("Connected to DB");
     } catch (error) {
-        console.log("error while connecting to db", error)
+        console.log("Error while connecting to DB:", error);
     }
-    console.log("listening on 8080")
-})
+    console.log(`Server listening on port ${PORT}`);
+});
+
 
