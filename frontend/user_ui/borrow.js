@@ -2,7 +2,8 @@ const bookModel = require("../models/book.model.js")
 
 
     (async function () {
-        const book = await fetch('http://localhost:8080/books/borrow/:${bookId}',{
+        const book = await fetch('b43-web-183-web-project-178.vercel.app
+/books/borrow/:${bookId}',{
             method:"POST",
             headers: application/json,
             body: json.stringfy({
