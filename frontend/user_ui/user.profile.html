@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user profile</title>
+</head>
+
+<body>
+    <div>
+        <div>
+            <h2>Borrowed Books</h2>
+            <div id="borrowedBooksContainer"></div>
+
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+    integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous">
+    </script>
+
+<script>
+    const socket = io("http://localhost:8080", { transports: ["websocket"] });
+
+
+    async function fetchBooks() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("You must be logged in");
+        window.location.href = "login.html"
+        return;
+    }
+
+    try {
+        let res = await fetch('http://localhost:8080/books/all', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // Attach token
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+
+        let result = await res.json();
+        displayBooks(result);
+    } catch (error) {
+        console.log("Error fetching books:", error);
+    }
+}
+
+
+// Fetch borrowed books on page load
+fetchBooks();
+
+
+
+</script>
+
+</html>

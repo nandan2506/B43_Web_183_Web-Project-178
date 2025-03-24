@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="./admin.css">
+</head>
+
+<body>
+    <div class="full">
+        <div class="border">
+            <div id="nav">
+                <input id="srch" type="search" placeholder="Search Books">
+                
+                <select id="filter">
+                    <option value="">Filter</option>
+                    <option value="description">Description</option>
+                    <option value="author">Author</option>
+                    <option value="publication_year">Publication Year</option>
+                    <option value="is_available">Availability</option>
+                    <option value="title">Title</option>
+                    <option value="genre">Genre</option>
+                </select>
+                <a href="./add.book.html">📚 Add Books</a>
+                <a href="../admin_ui/all _users.html">👥 Users</a>
+                <a href="./borrow.request.html">📩 Requests</a>
+                <a href="./borrowedBook.html">📖 Borrowed Books</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="full">
+        <div class="border">
+            <div id="container"></div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const container = document.getElementById("container");
+    const filter = document.getElementById("filter");
+    const search = document.getElementById("srch");
+
+    (async function fetchBooks() {
+        try {
+            let res = await fetch('http://localhost:8080/books/all');
+            let books = await res.json();
+            displayBooks(books);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+        }
+    })()
+
+    function displayBooks(books) {
+        container.innerHTML = "";
+        books.forEach(book => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <img src="${book.cover_image}" alt="${book.title}">
+                <h3>${book.title}</h3>
+                <p><strong>Author:</strong> ${book.author}</p>
+                <p><strong>Year:</strong> ${book.publication_year}</p>
+                <p>${book.description}</p>
+                <button class="delete_book" data-id="${book._id}">❌ Delete</button>
+            `;
+            container.appendChild(card);
+        });
+
+        document.querySelectorAll(".delete_book").forEach(button => {
+            button.addEventListener("click", async (e) => {
+                const bookId = e.target.getAttribute("data-id");
+                await deleteBook(bookId);
+            });
+        });
+    }
+
+    async function deleteBook(bookId) {
+        try {
+            let res = await fetch(`http://localhost:8080/books/${bookId}`, { method: "DELETE" });
+            if (res.ok) {
+                alert("Book deleted successfully!");
+                fetchBooks();
+            } else {
+                alert("Failed to delete book.");
+            }
+        } catch (error) {
+            console.error("Error deleting book:", error);
+        }
+    }
+
+    search.addEventListener("input", () => filterBooks());
+    filter.addEventListener("change", () => filterBooks());
+
+    async function filterBooks() {
+        let res = await fetch('http://localhost:8080/books/all');
+        let books = await res.json();
+        let query = search.value.toLowerCase();
+        let filterValue = filter.value;
+
+        let filteredBooks = books.filter(book => {
+            if (!query) return true;
+            if (!filterValue) {
+                return Object.values(book).some(value => value?.toString().toLowerCase().includes(query));
+            }
+            return book[filterValue]?.toString().toLowerCase().includes(query);
+        });
+
+        displayBooks(filteredBooks);
+    }
+
+    // fetchBooks();
+</script>
+
+</html>

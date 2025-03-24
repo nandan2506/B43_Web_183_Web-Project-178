@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow Requests</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #requests {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .request {
+            background: rgba(255, 255, 255, 0.2);
+            /* Glassmorphism effect */
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .request:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .request p {
+            color: #fff;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 5px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        button:first-of-type {
+            background: #4CAF50;
+            /* Green for Approve */
+        }
+
+        button:first-of-type:hover {
+            background: #45a049;
+        }
+
+        button:last-of-type {
+            background: #f44336;
+            /* Red for Reject */
+        }
+
+        button:last-of-type:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Pending Borrow Requests</h2>
+    <div id="requests"></div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous">
+        </script>
+
+    <script>
+
+
+        const socket = io("http://localhost:8080", { transports: ["websocket"] });
+
+        // Admin joins the room to listen for borrow requests
+        // socket.emit("join-room", "admin-room");
+
+        socket.on("new-borrow-request", async (data) => {
+             console.log("borrow request received at admin",data)
+            // data = userId, bookId
+
+            try {
+                // Display request in the admin panel
+                const requestContainer = document.getElementById("requests");
+
+                // Create a request card
+                const requestDiv = document.createElement("div");
+                requestDiv.classList.add("request");
+                requestDiv.innerHTML = `
+                <p><strong>User ID:</strong> ${data.userId}</p>
+                <p><strong>Book ID:</strong> ${data.bookId}</p>
+                <button onclick="approveRequest('${data.userId}', '${data.bookId}')">Approve</button>
+                <button onclick="rejectRequest('${data.userId}', '${data.bookId}')">Reject</button>
+                    `;
+
+                requestContainer.appendChild(requestDiv);
+                console.log("New borrow request:", data);
+            } catch (error) {
+                console.log("error while updating borrow request in admin panel", error)
+            }
+
+
+        });
+
+        // Approve request function
+        function approveRequest(userId, bookId) {
+            
+            
+            socket.emit("borrow-approval", { userId, bookId, status: "approved" })
+
+            alert(`Approved borrow request for Book ID: ${bookId}`)
+            removeRequest(bookId)
+        }
+
+        // Reject request function
+        function rejectRequest(userId, bookId) {
+            socket.emit("borrow-approval", { userId, bookId, status: "rejected" });
+            alert(`Rejected borrow request for Book ID: ${bookId}`);
+            removeRequest(bookId);
+        }
+
+        // Remove request from UI after approval/rejection
+        function removeRequest(bookId) {
+            const requestDivs = document.querySelectorAll(".request");
+            requestDivs.forEach((div) => {
+                if (div.innerHTML.includes(bookId)) {
+                    div.remove();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

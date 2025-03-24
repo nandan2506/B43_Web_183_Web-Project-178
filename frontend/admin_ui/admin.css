@@ -1,0 +1,88 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.full {
+    max-width: 100%;
+}
+
+.border {
+    max-width: 1520px;
+    margin: auto;
+    padding: 20px;
+}
+
+#nav {
+    display: flex;
+    padding: 15px;
+    background: #2c3e50;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#nav a, #nav select, #nav input {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: white;
+    background: #34495e;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#nav a:hover, #nav select:hover {
+    background: #1abc9c;
+}
+
+#srch {
+    padding: 6px;
+    width: 200px;
+}
+
+#container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.card {
+    width: 300px;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 10px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.card p {
+    font-size: 14px;
+    color: gray;
+}
+
+.delete_book {
+    padding: 8px 12px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete_book:hover {
+    background: darkred;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="./index.css">
+    
+</head>
+
+<body>
+    <div>
+        <div id="box">
+            <div id="image" >
+                <img src="./Screenshot 2025-03-18 135221.png" alt="logo">
+            </div>
+
+            <div id="user">
+                <h2>USER</h2>
+            </div>
+
+            <div id="admin">
+
+                <h2>ADMIN</h2>
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script>
+    const socket = io("http://localhost:8080" ,{transports: ["websocket"]})
+</script>
+<script>
+    const user = document.getElementById("user")
+    user.addEventListener("click",()=>{
+        window.location.href="./user_ui/userSignup.html"
+    })
+
+    const admin = document.getElementById("admin")
+    admin.addEventListener("click",()=>{
+        window.location.href="./admin_ui/admin.login.html"
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user</title>
+    <link rel="stylesheet" href="./user.css">
+</head>
+
+<body>
+    <div class="full">
+        <div class="border">
+
+            <div id="nav">
+                <div>
+                    <input id="srch" type="search" placeholder="search">
+                </div>
+
+                
+                <div>
+                    <select id="filter">
+                        <option value="">filter</option>
+                        <option value="description">description</option>
+                        <option value="author">author</option>
+                        <option value="publication_year">publication year</option>
+                        <option value="is_available">is available</option>
+                        <option value="title">title</option>
+                        <option value="genre">genre</option>
+                    </select>
+                </div>
+
+                <div>
+                    <a href="./user.profile.html">profile</a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="full">
+        <div class="border">
+
+            <div id="container">
+
+            </div>
+
+        </div>
+    </div>
+    </div>
+</body>
+<script src="./user.js"></script>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script>
+    const socket = io("http://localhost:8080" ,{transports: ["websocket"]})
+    socket.emit("user-msg","user connected")
+
+    // socket.on("available-update",(book)=>{
+
+    //     console.log(book)
+    // })
+
+    // socket.on("borrow-approval",(data)=>{
+        
+    // })
+    
+</script>
+
+</html>
