@@ -53,7 +53,7 @@
 <script src="./user.js"></script>
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 <script>
-    const socket = io("http://localhost:8080" ,{transports: ["websocket"]})
+    const socket = io("http://b43-web-183-web-project-178-w9sr.vercel.app" ,{transports: ["websocket"]})
     socket.emit("user-msg","user connected")
     socket.on("available-update",(book)=>{
 

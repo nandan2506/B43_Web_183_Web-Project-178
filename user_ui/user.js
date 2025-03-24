@@ -2,7 +2,7 @@
 
 (async function () {
     try {
-        let res = await fetch('http://localhost:8080/books/all', {
+        let res = await fetch('http://b43-web-183-web-project-178-w9sr.vercel.app/books/all', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"

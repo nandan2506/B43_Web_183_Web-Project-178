@@ -46,7 +46,7 @@
 
     (async function fetchBooks() {
         try {
-            let res = await fetch('http://localhost:8080/books/all');
+            let res = await fetch('http://b43-web-183-web-project-178-w9sr.vercel.app/books/all');
             let books = await res.json();
             displayBooks(books);
         } catch (error) {
@@ -80,7 +80,7 @@
 
     async function deleteBook(bookId) {
         try {
-            let res = await fetch(`http://localhost:8080/books/${bookId}`, { method: "DELETE" });
+            let res = await fetch(`http://b43-web-183-web-project-178-w9sr.vercel.app/books/${bookId}`, { method: "DELETE" });
             if (res.ok) {
                 alert("Book deleted successfully!");
                 fetchBooks();
@@ -96,7 +96,7 @@
     filter.addEventListener("change", () => filterBooks());
 
     async function filterBooks() {
-        let res = await fetch('http://localhost:8080/books/all');
+        let res = await fetch('http://b43-web-183-web-project-178-w9sr.vercel.app/books/all');
         let books = await res.json();
         let query = search.value.toLowerCase();
         let filterValue = filter.value;
