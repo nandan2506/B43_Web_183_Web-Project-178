@@ -93,7 +93,8 @@ search.addEventListener("input", () => filterBooks());
 filter.addEventListener("change", () => filterBooks());
 
 async function filterBooks() {
-    let res = await fetch('http://localhost:8080/books/all');
+    let res = await fetch('b43-web-183-web-project-178-w9sr.vercel.app
+/books/all');
     let books = await res.json();
     let query = search.value.toLowerCase();
     let filterValue = filter.value;
